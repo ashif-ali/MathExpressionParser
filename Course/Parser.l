@@ -21,21 +21,81 @@ extern "C" int yylex();
 
 extern char lex_buffer[MAX_STRING_SIZE];
 extern stack_t undo_stack;
+extern int cyylex();
+extern void yyrewind(int n);
+extern char* curr_ptr;
 
 stack_t undo_stack = {-1, {0,0,0}};
 
 char lex_buffer[MAX_STRING_SIZE]; // Declaring the buffer as a char array
+char* curr_ptr = lex_buffer;
+
+char* lex_curr_token;
+int lex_curr_token_len;
 
 static void lex_push(lex_data_t lex_data) {
     assert(undo_stack.top < MAX_MEXPR_LEN - 1);
     undo_stack.data[++undo_stack.top] = lex_data; 
+    lex_curr_token = (char*)lex_data.token_val;
 }
 
 static lex_data_t lex_pop() {
     assert(undo_stack.top > -1);
     lex_data_t res = undo_stack[undo_stack.top];
     undo_stack.top--;
+
+    if(undo_stack.top > -1) {
+        lex_data_t stck_top_lexd = undo_stack.data[undo_stack.top];
+        lex_curr_token = (char*) stck_top_lexd.token_val;
+        lex_curr_token_len = stck_top_lexd.token_len;
+    }
+
     return res;
+}
+
+static void process_white_space(int n)
+{
+    lex_data_t lex_data;
+    curr_ptr += n;
+    lex_data.token_code = PARSER_WHITE_SPACE;
+    lex_data.token_len = n;
+    lex_data.token_val = NULL;
+    lex_push(lex_data);
+}
+
+int cyylex() 
+{
+    int token_code = yylex();
+    lex_data_t lex_data;
+    lex_data.token_code = token_code;
+    lex_data.token_len = yyleng;
+    curr_ptr += yyleng;
+    lex_data.token_val = (char*)calloc(1, yyleng + 1);
+    strncpy(lex_data.token_val, yytext, yyleng + 1)
+    lex_push(lex_data);
+    return token_code;
+}
+
+void yyrewind(int n) 
+{
+    if(n <= 0) return;
+    if(curr_ptr == lex_buffer) return;
+    int data_len = 0;
+    lex_data_t lex_data;
+    while(n)
+    {
+        lex_data = lex_pop();
+        data_len += lex_data.token_len;
+        if(lex_data.token_code == PARSER_WHITE_SPACE)
+        {
+            continue;
+        }
+        n--;
+        lex_data.token_code = 0;
+        lex_data.token_val = 0;
+    }
+    curr_ptr -= data_len;
+    yy_scan_string(curr_ptr);
 }
 
 #include "MexprcppEnums.h"
@@ -45,7 +105,7 @@ static lex_data_t lex_pop() {
 
 "("                 { return MATH_CPP_BRACKET_START; }
 ")"                 { return MATH_CPP_BRACKET_END; }
-">="                {return  MATH_CPP_GREATER_THAN_EQ;}
+">="                { return  MATH_CPP_GREATER_THAN_EQ;}
 "<="                { return MATH_CPP_LESS_THAN_EQ; }
 "<"                 { return MATH_CPP_LESS_THAN; }
 ">"                 { return MATH_CPP_GREATER_THAN; }
@@ -70,8 +130,8 @@ static lex_data_t lex_pop() {
 
 "\\\n"              { /* Handle escaped newline */ }
 
-[ ]                 { /* Ignore single spaces */ }
-[\t]                { /* Ignore tabs */ }
+[ ]                 { process_white_space(1) }
+[\t]                { process_white_space(4) }
 
 "\\q"               { return PARSER_QUIT; }
 

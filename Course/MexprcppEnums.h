@@ -66,7 +66,8 @@ typedef enum {
 typedef enum {
     // 38
     PARSER_EOL = (int)MATH_CPP_DTYPE_MAX + 1,
-    PARSER_QUIT
+    PARSER_QUIT,
+    PARSER_WHITE_SPACE,
 } mexprcpp_parser_control_t;
 
 static inline int Math_cpp_operator_precedence(int token_code)
