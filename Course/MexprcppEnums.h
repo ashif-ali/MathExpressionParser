@@ -40,8 +40,8 @@ typedef enum {
     MATH_CPP_BRACKET_START,
     MATH_CPP_BRACKET_END,
     MATH_CPP_COMMA,
-    MATH_CPP_OPR_INVALID,
-    MATH_CPP_OPR_MAX
+    MATH_CPP_OPR_MAX,
+    MATH_CPP_OPR_INVALID
 
 } mexprcpp_operators_t;
 
@@ -54,12 +54,12 @@ typedef enum {
     MATH_CPP_IPV4,
     MATH_CPP_BOOL,
     MATH_CPP_VARIABLE,
-    MATH_CPP_IDENTIFIER_IDENTIFIER,
     MATH_CPP_DTYPE_LAST,
-    // 35
+    // 34
     MATH_CPP_DTYPE_WILDCARD, // Corrected typo
     MATH_CPP_DTYPE_INVALID,
-    MATH_CPP_DTYPE_MAX
+    MATH_CPP_DTYPE_MAX,
+    MATH_CPP_IDENTIFIER_IDENTIFIER
 
 } mexprcpp_dtypes_t;
 
