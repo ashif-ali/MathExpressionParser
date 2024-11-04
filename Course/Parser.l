@@ -25,6 +25,10 @@ extern int cyylex();
 extern void yyrewind(int n);
 extern char* curr_ptr;
 
+#define CHECKPOINT(a) (a = undo_stack.top)
+
+#define RESTORE_CHKP(a) yyrewind(undo_stack.top - (a))
+
 stack_t undo_stack = {-1, {0,0,0}};
 
 char lex_buffer[MAX_STRING_SIZE]; // Declaring the buffer as a char array
@@ -97,6 +101,32 @@ void yyrewind(int n)
     curr_ptr -= data_len;
     yy_scan_string(curr_ptr);
 }
+
+void parser_stack_reset() 
+{
+    int i;
+    lex_data_t* lex_data;
+    for(i = 0; i < undo_stack.top; i++) {
+        lex_data = &undo_stack.data[i];
+        lex_data->token_code = 0;    
+        lex_data->token_len = 0;     
+        if(lex_data->token_val) {
+            free(lex_data->token_val);
+            lex_data->token_val = NULL;
+        }
+    }
+    undo_stack.top = -1;
+    curr_ptr = lex_buffer;
+    lex_curr_token = NULL;
+    lex_curr_token_len = 0;
+}
+
+
+void lex_set_scan_buffer(const char* buffer) 
+{
+    yy_scan_string(buffer);
+}
+
 
 #include "MexprcppEnums.h"
 %}
