@@ -10,19 +10,19 @@
 
 typedef enum {
     /* Mathematical Operators */
-    MATH_CPP_OPR_FIRST,
+    MATH_CPP_OPR_FIRST, //0
     MATH_CPP_MOD,
     MATH_CPP_PLUS,
     MATH_CPP_MINUS,
     MATH_CPP_MUL,
     MATH_CPP_DIV,
     MATH_CPP_SQR,
-    MATH_CPP_SQRT, // 7
+    MATH_CPP_SQRT, 
     MATH_CPP_MAX,
     MATH_CPP_MIN,
     MATH_CPP_SIN,
     MATH_CPP_COS,
-    MATH_CPP_POW,
+    MATH_CPP_POW, //12
 
     /* Inequality Operators */
     MATH_CPP_EQ,
@@ -30,18 +30,18 @@ typedef enum {
     MATH_CPP_LESS_THAN,
     MATH_CPP_LESS_THAN_EQ,
     MATH_CPP_GREATER_THAN_EQ,
-    MATH_CPP_GREATER_THAN,
+    MATH_CPP_GREATER_THAN, //18
 
     /* Logical Operators */
     MATH_CPP_OR,
     MATH_CPP_AND,
 
     /* Other Math Expression Entities */
-    MATH_CPP_BRACKET_START,
+    MATH_CPP_BRACKET_START, //21
     MATH_CPP_BRACKET_END,
     MATH_CPP_COMMA,
-    MATH_CPP_OPR_MAX,
-    MATH_CPP_OPR_INVALID
+    MATH_CPP_OPR_INVALID,
+    MATH_CPP_OPR_MAX
 
 } mexprcpp_operators_t;
 
@@ -58,8 +58,8 @@ typedef enum {
     // 34
     MATH_CPP_DTYPE_WILDCARD, // Corrected typo
     MATH_CPP_DTYPE_INVALID,
+    MATH_CPP_IDENTIFIER_IDENTIFIER,
     MATH_CPP_DTYPE_MAX,
-    MATH_CPP_IDENTIFIER_IDENTIFIER
 
 } mexprcpp_dtypes_t;
 
